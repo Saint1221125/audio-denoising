@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Audio Denoising (Web Audio API)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="container">
+  <h1>Audio Denoising (Web Audio API)</h1>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <input id="fileInput" type="file" accept="audio/*" />
+
+    <div class="control-group">
+      <label>Cutoff Frequency (Hz)</label>
+      <input id="freq" type="number" value="1000" min="50" max="12000">
+    </div>
+
+    <div class="control-group">
+      <label>Bandwidth (Q)</label>
+      <input id="q" type="number" value="1" min="0.1" step="0.1">
+    </div>
+
+    <button id="processBtn" disabled>Process Audio</button>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="players">
+
+    <!-- ORIGINAL -->
+    <div>
+      <h3>Original Audio</h3>
+      <button id="playOrig" disabled>Play</button>
+      <canvas id="waveOrig" width="900" height="120"></canvas>
+    </div>
+
+    <!-- LOW PASS -->
+    <div class="processed">
+      <h3>Low-pass Filter</h3>
+      <button id="playLow" disabled>Play</button>
+      <button id="downloadLow" disabled>Download</button>
+      <canvas id="waveLow" width="900" height="120"></canvas>
+      <p>SNR: <span id="snrLow">-</span> dB</p>
+    </div>
+
+    <!-- HIGH PASS -->
+    <div class="processed">
+      <h3>High-pass Filter</h3>
+      <button id="playHigh" disabled>Play</button>
+      <button id="downloadHigh" disabled>Download</button>
+      <canvas id="waveHigh" width="900" height="120"></canvas>
+      <p>SNR: <span id="snrHigh">-</span> dB</p>
+    </div>
+
+    <!-- BAND PASS -->
+    <div class="processed">
+      <h3>Band-pass Filter</h3>
+      <button id="playBand" disabled>Play</button>
+      <button id="downloadBand" disabled>Download</button>
+      <canvas id="waveBand" width="900" height="120"></canvas>
+      <p>SNR: <span id="snrBand">-</span> dB</p>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>Made For Tugas Besar Pengolahan Sinyal</div>
+    <div>Kelompok 6</div>
+    <div>
+      1. R Daffa Putra Y<br>
+      2. Saint Heila T. A
+    </div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
