@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Audio Denoising (Web Audio)</title>
+  <title>Audio Denoising (Web Audio API)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,7 +11,6 @@
 <div class="container">
   <h1>Audio Denoising (Web Audio API)</h1>
 
-  <!-- CONTROLS -->
   <div class="controls">
     <div class="control-group">
       <label>Input Audio</label>
@@ -34,9 +33,7 @@
     <button id="processBtn" disabled>Process</button>
   </div>
 
-  <!-- PLAYERS -->
   <div class="players">
-
     <div>
       <h3>Original Audio</h3>
       <button id="playOrig" disabled>Play</button>
@@ -66,7 +63,6 @@
       <canvas id="waveBand" width="1000" height="140"></canvas>
       <p>SNR: <span id="snrBand">-</span> dB</p>
     </div>
-
   </div>
 
   <footer class="footer">
