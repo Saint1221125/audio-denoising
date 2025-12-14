@@ -1,88 +1,75 @@
 :root{
-  /* Ocean palette */
-  --ocean-light:#4fd1c5;   /* shallow water */
-  --ocean-mid:#0ea5a4;     /* ocean teal */
-  --ocean-deep:#075985;    /* deep sea blue */
+  --ocean-light:#4fd1c5;
+  --ocean-mid:#0ea5a4;
+  --ocean-deep:#075985;
 
-  --card:rgba(255,255,255,0.12);
-  --accent:#22d3ee;        /* turquoise */
+  --card:rgba(255,255,255,0.14);
+  --accent:#22d3ee;
   --accent-soft: rgba(34,211,238,0.35);
 
   --text:#ecfeff;
   --border:rgba(255,255,255,0.18);
 }
 
-*{
-  box-sizing:border-box;
-}
+*{ box-sizing:border-box; }
 
 body{
   margin:0;
   font-family: Inter, system-ui, Arial, sans-serif;
   background:linear-gradient(
     180deg,
-    var(--ocean-light) 0%,
-    var(--ocean-mid) 45%,
-    var(--ocean-deep) 100%
+    var(--ocean-light),
+    var(--ocean-mid),
+    var(--ocean-deep)
   );
   color:var(--text);
 }
 
-/* ================= CONTAINER ================= */
 .container{
   max-width:1200px;
   margin:32px auto;
   padding:22px;
 }
 
-/* ================= TITLE ================= */
 h1{
   text-align:center;
-  font-size:26px;
-  font-weight:700;
   margin-bottom:28px;
-  letter-spacing:0.4px;
+  font-weight:700;
 }
 
-/* ================= CONTROLS ================= */
 .controls{
   display:grid;
   grid-template-columns:2fr auto auto 1fr 1fr auto;
   gap:16px;
   align-items:end;
-  margin-bottom:32px;
   padding:18px;
+  margin-bottom:32px;
   background:linear-gradient(
     180deg,
-    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.25),
     rgba(14,165,164,0.55)
   );
   border-radius:18px;
-  box-shadow:
-    0 10px 30px rgba(7,89,133,0.35);
+  box-shadow:0 10px 30px rgba(7,89,133,0.35);
 }
 
-/* ================= FORM ================= */
 .control-group{
   display:flex;
   flex-direction:column;
   gap:4px;
 }
 
-.controls label{
+label{
   font-size:13px;
   font-weight:600;
-  opacity:0.95;
 }
 
-/* ================= INPUT ================= */
 input{
-  background:rgba(255,255,255,0.85);
-  color:#043344;
-  border:1px solid var(--border);
   padding:10px 14px;
   border-radius:10px;
-  font-size:14px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.9);
+  color:#043344;
 }
 
 input:focus{
@@ -91,53 +78,31 @@ input:focus{
   box-shadow:0 0 0 2px var(--accent-soft);
 }
 
-/* ================= BUTTON ================= */
 button{
-  background:rgba(255,255,255,0.85);
-  color:#043344;
-  border:1px solid var(--border);
   padding:10px 16px;
   border-radius:10px;
-  font-size:14px;
+  border:none;
   font-weight:700;
   cursor:pointer;
-  transition:all 0.15s ease;
 }
 
-button:hover:not(:disabled){
-  background:#cffafe;
-}
+button:disabled{ opacity:.5; }
 
-button:disabled{
-  opacity:0.5;
-  cursor:not-allowed;
-}
-
-/* tombol utama */
 #processBtn{
   background:linear-gradient(180deg,#22d3ee,#0ea5a4);
-  border:none;
   color:#022c22;
 }
 
-#processBtn:hover:not(:disabled){
-  filter:brightness(1.05);
-}
-
-/* record */
 #recordBtn{
   background:linear-gradient(180deg,#5eead4,#2dd4bf);
-  border:none;
   color:#022c22;
 }
 
 #stopRecordBtn{
   background:linear-gradient(180deg,#fb7185,#f43f5e);
-  border:none;
-  color:#ffffff;
+  color:#fff;
 }
 
-/* ================= PLAYERS ================= */
 .players{
   display:flex;
   flex-direction:column;
@@ -147,79 +112,48 @@ button:disabled{
 .players > div{
   background:linear-gradient(
     180deg,
-    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.25),
     rgba(14,165,164,0.35)
   );
   padding:18px;
   border-radius:18px;
-  box-shadow:
-    0 8px 24px rgba(7,89,133,0.35);
+  box-shadow:0 8px 24px rgba(7,89,133,0.35);
 }
 
-.players h3{
-  margin:0 0 10px;
-  font-size:17px;
-  font-weight:700;
-}
-
-/* ================= PROCESSED ================= */
 .processed{
   border-left:5px solid var(--accent);
 }
 
-/* ================= CANVAS ================= */
 canvas{
-  display:block;
   width:100%;
-  background:linear-gradient(
-    180deg,
-    #083344,
-    #042f2e
-  );
+  background:linear-gradient(180deg,#083344,#042f2e);
   border-radius:10px;
   margin-top:10px;
 }
 
-/* ================= BUTTON GROUP ================= */
 .processed button{
   margin-right:10px;
 }
 
-/* ================= SNR ================= */
 p{
   margin-top:10px;
-  font-size:14px;
   font-weight:700;
   color:#cffafe;
 }
 
 span{
   color:var(--accent);
-  font-size:16px;
 }
 
-/* ================= FOOTER ================= */
 .footer{
   margin-top:40px;
   padding-top:16px;
   border-top:2px solid rgba(34,211,238,0.35);
   text-align:center;
-}
-
-.footer div{
-  font-size:14px;
   font-weight:600;
-  line-height:1.6;
 }
 
-/* ================= RESPONSIVE ================= */
 @media(max-width:900px){
-  .controls{
-    grid-template-columns:1fr;
-  }
-
-  button{
-    width:100%;
-  }
+  .controls{ grid-template-columns:1fr; }
+  button{ width:100%; }
 }
-
