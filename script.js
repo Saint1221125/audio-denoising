@@ -1,3 +1,13 @@
+// ===== MOBILE SAFETY (iOS / Android) =====
+document.addEventListener(
+  'touchstart',
+  () => {
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  },
+  { once: true }
+);
 /* ===== ELEMENT ===== */
 const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
