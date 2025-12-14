@@ -10,13 +10,18 @@
 
 <div class="container">
   <h1>Audio Denoising (Web Audio API)</h1>
+
+  <!-- CONTROLS -->
   <div class="controls">
-   <input
-  id="fileInput"
-  type="file"
-  accept=".wav,.mp3,.m4a,.ogg"
-  capture
-/>
+    <div class="control-group file">
+      <label>Input Audio</label>
+      <input
+        id="fileInput"
+        type="file"
+        accept="audio/*,.wav,.mp3,.m4a,.ogg"
+      />
+    </div>
+
     <div class="control-group">
       <label>Cutoff Frequency (Hz)</label>
       <input id="freq" type="number" value="1000" min="50" max="12000">
@@ -37,7 +42,7 @@
     <div>
       <h3>Original Audio</h3>
       <button id="playOrig" disabled>Play</button>
-      <canvas id="waveOrig" width="900" height="120"></canvas>
+      <canvas id="waveOrig" width="1000" height="140"></canvas>
     </div>
 
     <!-- LOW PASS -->
@@ -45,7 +50,7 @@
       <h3>Low-pass Filter</h3>
       <button id="playLow" disabled>Play</button>
       <button id="downloadLow" disabled>Download</button>
-      <canvas id="waveLow" width="900" height="120"></canvas>
+      <canvas id="waveLow" width="1000" height="140"></canvas>
       <p>SNR: <span id="snrLow">-</span> dB</p>
     </div>
 
@@ -54,7 +59,7 @@
       <h3>High-pass Filter</h3>
       <button id="playHigh" disabled>Play</button>
       <button id="downloadHigh" disabled>Download</button>
-      <canvas id="waveHigh" width="900" height="120"></canvas>
+      <canvas id="waveHigh" width="1000" height="140"></canvas>
       <p>SNR: <span id="snrHigh">-</span> dB</p>
     </div>
 
@@ -63,7 +68,7 @@
       <h3>Band-pass Filter</h3>
       <button id="playBand" disabled>Play</button>
       <button id="downloadBand" disabled>Download</button>
-      <canvas id="waveBand" width="900" height="120"></canvas>
+      <canvas id="waveBand" width="1000" height="140"></canvas>
       <p>SNR: <span id="snrBand">-</span> dB</p>
     </div>
 
