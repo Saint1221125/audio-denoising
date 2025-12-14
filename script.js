@@ -23,7 +23,7 @@ let currentSource = null;
 let mediaRecorder = null;
 let recordedChunks = [];
 
-/* ===== LOAD AUDIO FILE ===== */
+/* ===== LOAD FILE ===== */
 fileInput.onchange = async e=>{
   const file = e.target.files[0];
   if(!file) return;
@@ -38,7 +38,7 @@ fileInput.onchange = async e=>{
   processBtn.disabled = false;
 };
 
-/* ===== RECORD MIC ===== */
+/* ===== MIC RECORD ===== */
 recordBtn.onclick = async ()=>{
   audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
   if(audioCtx.state === 'suspended') await audioCtx.resume();
@@ -53,8 +53,7 @@ recordBtn.onclick = async ()=>{
 
   mediaRecorder.onstop = async ()=>{
     const blob = new Blob(recordedChunks,{type:'audio/webm'});
-    const buffer = await blob.arrayBuffer();
-    origBuffer = await audioCtx.decodeAudioData(buffer);
+    origBuffer = await audioCtx.decodeAudioData(await blob.arrayBuffer());
     drawWave(origBuffer, waveOrig);
     playOrig.disabled = false;
     processBtn.disabled = false;
@@ -66,10 +65,8 @@ recordBtn.onclick = async ()=>{
 };
 
 stopRecordBtn.onclick = ()=>{
-  if(mediaRecorder){
-    mediaRecorder.stop();
-    mediaRecorder.stream.getTracks().forEach(t=>t.stop());
-  }
+  mediaRecorder?.stop();
+  mediaRecorder?.stream.getTracks().forEach(t=>t.stop());
   recordBtn.disabled = false;
   stopRecordBtn.disabled = true;
 };
@@ -95,17 +92,20 @@ async function runFilter(type,f,q){
   const off = new OfflineAudioContext(1,origBuffer.length,origBuffer.sampleRate);
   const src = off.createBufferSource();
   const biq = off.createBiquadFilter();
+
   src.buffer = origBuffer;
   biq.type = type;
   biq.frequency.value = f;
   biq.Q.value = q;
+
   src.connect(biq);
   biq.connect(off.destination);
   src.start();
+
   buffers[type] = await off.startRendering();
 }
 
-/* ===== PLAY / STOP (MOBILE SAFE) ===== */
+/* ===== PLAY / STOP ===== */
 async function playStop(buffer, btn){
   if(!buffer) return;
   if(audioCtx.state === 'suspended') await audioCtx.resume();
@@ -121,6 +121,7 @@ async function playStop(buffer, btn){
   src.buffer = buffer;
   src.connect(audioCtx.destination);
   src.start();
+
   currentSource = src;
   btn.textContent = 'Stop';
 
@@ -139,29 +140,31 @@ playBand.onclick = ()=>playStop(buffers.bandpass,playBand);
 function drawWave(buffer,canvas){
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle='#020617';
+  ctx.fillStyle='#042f2e';
   ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.strokeStyle='#38bdf8';
+  ctx.strokeStyle='#22d3ee';
   ctx.beginPath();
-  const d=buffer.getChannelData(0);
-  const step=Math.ceil(d.length/canvas.width);
-  const mid=canvas.height/2;
+
+  const d = buffer.getChannelData(0);
+  const step = Math.ceil(d.length / canvas.width);
+  const mid = canvas.height / 2;
+
   for(let i=0;i<canvas.width;i++){
     let min=1,max=-1;
     for(let j=0;j<step;j++){
-      const v=d[i*step+j]||0;
-      min=Math.min(min,v);
-      max=Math.max(max,v);
+      const v = d[i*step+j] || 0;
+      min = Math.min(min,v);
+      max = Math.max(max,v);
     }
-    ctx.moveTo(i,mid+min*mid);
-    ctx.lineTo(i,mid+max*mid);
+    ctx.moveTo(i, mid + min*mid);
+    ctx.lineTo(i, mid + max*mid);
   }
   ctx.stroke();
 }
 
 /* ===== SNR ===== */
 function calcSNR(o,p){
-  const a=o.getChannelData(0),b=p.getChannelData(0);
+  const a=o.getChannelData(0), b=p.getChannelData(0);
   let s=0,n=0;
   for(let i=0;i<a.length;i++){
     s+=b[i]*b[i];
@@ -172,28 +175,37 @@ function calcSNR(o,p){
 
 function render(type,canvas,snrEl){
   drawWave(buffers[type],canvas);
-  snrEl.textContent=calcSNR(origBuffer,buffers[type]).toFixed(2);
+  snrEl.textContent = calcSNR(origBuffer,buffers[type]).toFixed(2);
 }
 
 /* ===== DOWNLOAD ===== */
 function bufferToWav(b){
-  const len=b.length*2,ab=new ArrayBuffer(44+len),v=new DataView(ab);
+  const len=b.length*2, ab=new ArrayBuffer(44+len), v=new DataView(ab);
   const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
-  w(0,'RIFF');v.setUint32(4,36+len,true);w(8,'WAVE');w(12,'fmt ');
-  v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
-  v.setUint32(24,b.sampleRate,true);v.setUint32(28,b.sampleRate*2,true);
-  v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,len,true);
-  let o=44,d=b.getChannelData(0);
-  for(let i=0;i<d.length;i++){v.setInt16(o,Math.max(-1,Math.min(1,d[i]))*0x7fff,true);o+=2;}
+
+  w(0,'RIFF'); v.setUint32(4,36+len,true);
+  w(8,'WAVE'); w(12,'fmt ');
+  v.setUint32(16,16,true); v.setUint16(20,1,true);
+  v.setUint16(22,1,true); v.setUint32(24,b.sampleRate,true);
+  v.setUint32(28,b.sampleRate*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true);
+  w(36,'data'); v.setUint32(40,len,true);
+
+  let o=44, d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++){
+    v.setInt16(o,Math.max(-1,Math.min(1,d[i]))*0x7fff,true);
+    o+=2;
+  }
   return new Blob([v],{type:'audio/wav'});
 }
 
 const dl=(buf,name)=>{
   const a=document.createElement('a');
   a.href=URL.createObjectURL(bufferToWav(buf));
-  a.download=name;a.click();
+  a.download=name;
+  a.click();
 };
 
-downloadLow.onclick = ()=>dl(buffers.lowpass,'LOW_PASS.wav');
-downloadHigh.onclick= ()=>dl(buffers.highpass,'HIGH_PASS.wav');
-downloadBand.onclick= ()=>dl(buffers.bandpass,'BAND_PASS.wav');
+downloadLow.onclick  = ()=>dl(buffers.lowpass,'LOW_PASS.wav');
+downloadHigh.onclick = ()=>dl(buffers.highpass,'HIGH_PASS.wav');
+downloadBand.onclick = ()=>dl(buffers.bandpass,'BAND_PASS.wav');
