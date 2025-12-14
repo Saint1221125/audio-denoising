@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Audio Denoising (Web Audio API)</title>
+  <title>Audio Denoising (Web Audio)</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -13,14 +13,13 @@
 
   <!-- CONTROLS -->
   <div class="controls">
-    <div class="control-group file">
+    <div class="control-group">
       <label>Input Audio</label>
-      <input
-        id="fileInput"
-        type="file"
-        accept="audio/*,.wav,.mp3,.m4a,.ogg"
-      />
+      <input id="fileInput" type="file" accept="audio/*,.wav,.mp3,.m4a,.ogg">
     </div>
+
+    <button id="recordBtn">🎤 Record</button>
+    <button id="stopRecordBtn" disabled>⏹ Stop</button>
 
     <div class="control-group">
       <label>Cutoff Frequency (Hz)</label>
@@ -32,20 +31,18 @@
       <input id="q" type="number" value="1" min="0.1" step="0.1">
     </div>
 
-    <button id="processBtn" disabled>Process Audio</button>
+    <button id="processBtn" disabled>Process</button>
   </div>
 
   <!-- PLAYERS -->
   <div class="players">
 
-    <!-- ORIGINAL -->
     <div>
       <h3>Original Audio</h3>
       <button id="playOrig" disabled>Play</button>
       <canvas id="waveOrig" width="1000" height="140"></canvas>
     </div>
 
-    <!-- LOW PASS -->
     <div class="processed">
       <h3>Low-pass Filter</h3>
       <button id="playLow" disabled>Play</button>
@@ -54,7 +51,6 @@
       <p>SNR: <span id="snrLow">-</span> dB</p>
     </div>
 
-    <!-- HIGH PASS -->
     <div class="processed">
       <h3>High-pass Filter</h3>
       <button id="playHigh" disabled>Play</button>
@@ -63,7 +59,6 @@
       <p>SNR: <span id="snrHigh">-</span> dB</p>
     </div>
 
-    <!-- BAND PASS -->
     <div class="processed">
       <h3>Band-pass Filter</h3>
       <button id="playBand" disabled>Play</button>
@@ -74,7 +69,6 @@
 
   </div>
 
-  <!-- FOOTER -->
   <footer class="footer">
     <div>Made For Tugas Besar Pengolahan Sinyal</div>
     <div>Kelompok 6</div>
