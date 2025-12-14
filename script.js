@@ -1,14 +1,3 @@
-// ===== MOBILE SAFETY (iOS / Android) =====
-document.addEventListener(
-  'touchstart',
-  () => {
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-  },
-  { once: true }
-);
-/* ===== ELEMENT ===== */
 const fileInput = document.getElementById('fileInput');
 const processBtn = document.getElementById('processBtn');
 
@@ -24,14 +13,23 @@ const downloadBand = document.getElementById('downloadBand');
 const freqInput = document.getElementById('freq');
 const qInput    = document.getElementById('q');
 
-/* ===== STATE ===== */
 let audioCtx = null;
 let origBuffer = null;
 let buffers = {};
 let currentSource = null;
 
-/* ===== LOAD AUDIO ===== */
+/* MOBILE SAFETY */
+document.addEventListener('touchstart', ()=>{
+  if(audioCtx && audioCtx.state === 'suspended'){
+    audioCtx.resume();
+  }
+},{once:true});
+
+/* LOAD AUDIO */
 fileInput.addEventListener('change', async e=>{
+  const file = e.target.files[0];
+  if(!file) return;
+
   if(!audioCtx){
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -39,21 +37,15 @@ fileInput.addEventListener('change', async e=>{
     await audioCtx.resume();
   }
 
-  const file = e.target.files[0];
-  if(!file) return;
-
   origBuffer = await audioCtx.decodeAudioData(await file.arrayBuffer());
-
   drawWave(origBuffer, waveOrig);
 
   playOrig.disabled = false;
   processBtn.disabled = false;
 });
 
-/* ===== PROCESS ===== */
-processBtn.addEventListener('click', async ()=>{
-  if(!origBuffer) return;
-
+/* PROCESS */
+processBtn.onclick = async ()=>{
   const cutoff = Number(freqInput.value);
   const q = Number(qInput.value);
 
@@ -61,45 +53,44 @@ processBtn.addEventListener('click', async ()=>{
   await runFilter('highpass', cutoff, q);
   await runFilter('bandpass', cutoff, q);
 
-  renderResult('lowpass', waveLow, snrLow);
-  renderResult('highpass', waveHigh, snrHigh);
-  renderResult('bandpass', waveBand, snrBand);
+  render('lowpass', waveLow, snrLow);
+  render('highpass', waveHigh, snrHigh);
+  render('bandpass', waveBand, snrBand);
 
   playLow.disabled = playHigh.disabled = playBand.disabled = false;
   downloadLow.disabled = downloadHigh.disabled = downloadBand.disabled = false;
-});
+};
 
-/* ===== FILTER ===== */
-async function runFilter(type, freq, q){
-  const offline = new OfflineAudioContext(
+/* FILTER */
+async function runFilter(type,f,q){
+  const off = new OfflineAudioContext(
     origBuffer.numberOfChannels,
     origBuffer.length,
     origBuffer.sampleRate
   );
 
-  const src = offline.createBufferSource();
-  const biq = offline.createBiquadFilter();
+  const src = off.createBufferSource();
+  const biq = off.createBiquadFilter();
 
   src.buffer = origBuffer;
   biq.type = type;
-  biq.frequency.value = freq;
+  biq.frequency.value = f;
   biq.Q.value = q;
 
   src.connect(biq);
-  biq.connect(offline.destination);
+  biq.connect(off.destination);
   src.start();
 
-  buffers[type] = await offline.startRendering();
+  buffers[type] = await off.startRendering();
 }
 
-/* ===== RENDER ===== */
-function renderResult(type, canvas, snrEl){
-  const buf = buffers[type];
-  drawWave(buf, canvas);
-  snrEl.textContent = calcSNR(origBuffer, buf).toFixed(2);
+/* RENDER */
+function render(type, canvas, snrEl){
+  drawWave(buffers[type], canvas);
+  snrEl.textContent = calcSNR(origBuffer, buffers[type]).toFixed(2);
 }
 
-/* ===== PLAY / STOP ===== */
+/* PLAY / STOP */
 function playStop(buffer, btn){
   if(currentSource){
     currentSource.stop();
@@ -128,7 +119,7 @@ playLow.onclick  = ()=>playStop(buffers.lowpass, playLow);
 playHigh.onclick = ()=>playStop(buffers.highpass, playHigh);
 playBand.onclick = ()=>playStop(buffers.bandpass, playBand);
 
-/* ===== WAVEFORM ===== */
+/* WAVEFORM */
 function drawWave(buffer, canvas){
   const ctx = canvas.getContext('2d');
   const w = canvas.width;
@@ -159,7 +150,7 @@ function drawWave(buffer, canvas){
   ctx.stroke();
 }
 
-/* ===== SNR ===== */
+/* SNR */
 function calcSNR(orig, proc){
   const o = orig.getChannelData(0);
   const p = proc.getChannelData(0);
@@ -172,7 +163,7 @@ function calcSNR(orig, proc){
   return 10*Math.log10(s/(n+1e-12));
 }
 
-/* ===== DOWNLOAD ===== */
+/* DOWNLOAD */
 function bufferToWav(buffer){
   const len = buffer.length * 2;
   const ab = new ArrayBuffer(44 + len);
@@ -201,9 +192,10 @@ function bufferToWav(buffer){
 }
 
 function download(buffer,name){
-  const url=URL.createObjectURL(bufferToWav(buffer));
-  const a=document.createElement('a');
-  a.href=url; a.download=name;
+  const url = URL.createObjectURL(bufferToWav(buffer));
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
   a.click();
   URL.revokeObjectURL(url);
 }
