@@ -1,118 +1,204 @@
 :root{
-  --bg:#020617;
-  --card:#020617;
+  --blue-dark:#0a2540;
+  --blue-main:#0b3c5d;
+  --blue-soft:#145da0;
+  --blue-light:#1e81b0;
   --accent:#38bdf8;
-  --text:#e5e7eb;
+  --card:#0f172a;
+  --text:#e6f1ff;
+  --border:rgba(255,255,255,0.15);
 }
 
-*{ box-sizing:border-box; }
+*{
+  box-sizing:border-box;
+}
 
 body{
   margin:0;
-  font-family:system-ui, Arial;
-  background:linear-gradient(180deg,#020617,#000);
+  font-family:system-ui, Arial, sans-serif;
+  background:linear-gradient(
+    180deg,
+    #1e3a8a 0%,
+    #0b3c5d 35%,
+    #0a2540 100%
+  );
   color:var(--text);
 }
 
+/* ================= CONTAINER ================= */
 .container{
-  max-width:1100px;
-  margin:24px auto;
-  padding:20px;
+  max-width:1200px;
+  margin:40px auto;
+  padding:0 20px;
 }
 
+/* ================= TITLE ================= */
 h1{
   text-align:center;
-  margin-bottom:24px;
-  letter-spacing:.4px;
+  font-size:28px;
+  font-weight:600;
+  margin-bottom:36px;
+  letter-spacing:0.6px;
 }
 
-/* CONTROLS */
+/* ================= CONTROLS (FULL WIDTH) ================= */
 .controls{
-  display:flex;
-  gap:16px;
-  flex-wrap:wrap;
-  align-items:end;
-  background:#020617;
-  padding:16px;
-  border-radius:12px;
-  margin-bottom:28px;
-  border:1px solid #1e293b;
+  width:100%;
+  display:grid;
+  grid-template-columns: 
+    2.2fr   /* file */
+    1fr     /* cutoff */
+    1fr     /* Q */
+    auto;  /* button */
+  gap:20px;
+
+  padding:22px;
+  margin-bottom:40px;
+
+  background:linear-gradient(
+    180deg,
+    rgba(30,129,176,0.25),
+    rgba(10,37,64,0.85)
+  );
+  border-radius:18px;
+  border:1px solid var(--border);
+  box-shadow:0 12px 32px rgba(0,0,0,0.35);
 }
 
 .control-group{
   display:flex;
   flex-direction:column;
-  font-size:13px;
-  gap:4px;
+  gap:6px;
 }
 
-input, button{
-  background:#020617;
-  border:1px solid #1e293b;
-  color:white;
-  padding:10px 14px;
-  border-radius:8px;
+.controls label{
+  font-size:14px;
+  font-weight:500;
+  opacity:0.95;
 }
 
+/* ================= INPUT ================= */
+input[type="file"],
+input[type="number"]{
+  width:100%;
+  background:rgba(255,255,255,0.1);
+  color:var(--text);
+  border:1px solid var(--border);
+  padding:12px 16px;
+  border-radius:12px;
+  font-size:15px;
+}
+
+input[type="number"]:focus{
+  outline:none;
+  border-color:var(--accent);
+  box-shadow:0 0 0 2px rgba(56,189,248,0.35);
+}
+
+/* ================= BUTTON ================= */
 button{
+  height:48px;
+  align-self:flex-end;
+  background:linear-gradient(
+    180deg,
+    #38bdf8,
+    #1e81b0
+  );
+  color:#022c43;
+  border:none;
+  padding:0 26px;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:700;
   cursor:pointer;
-  font-weight:600;
+  transition:all .15s ease;
+}
+
+button:hover:not(:disabled){
+  filter:brightness(1.1);
 }
 
 button:disabled{
-  opacity:.45;
+  opacity:.5;
   cursor:not-allowed;
 }
 
-#processBtn{
-  background:#0284c7;
-  border:none;
-}
-
-/* PLAYERS */
+/* ================= PLAYERS ================= */
 .players{
   display:flex;
   flex-direction:column;
-  gap:24px;
+  gap:32px;
 }
 
 .players > div{
-  background:#020617;
-  padding:16px;
-  border-radius:12px;
-  border:1px solid #1e293b;
+  background:linear-gradient(
+    180deg,
+    rgba(255,255,255,0.06),
+    rgba(10,37,64,0.9)
+  );
+  padding:22px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  box-shadow:0 10px 28px rgba(0,0,0,0.35);
 }
 
+.players h3{
+  margin:0 0 14px;
+  font-size:18px;
+  font-weight:600;
+}
+
+/* ================= PROCESSED ================= */
 .processed{
-  border-left:4px solid var(--accent);
+  border-left:6px solid var(--accent);
 }
 
+/* ================= CANVAS ================= */
 canvas{
   width:100%;
-  height:120px;
-  background:#020617;
-  border-radius:6px;
-  margin-top:10px;
+  height:140px;
+  background:linear-gradient(
+    180deg,
+    #020617,
+    #020617
+  );
+  border-radius:14px;
+  margin-top:12px;
 }
 
+/* ================= BUTTON GROUP ================= */
 .processed button{
-  margin-right:10px;
+  margin-right:12px;
 }
 
+/* ================= SNR ================= */
 p{
-  margin-top:10px;
+  margin-top:14px;
+  font-size:16px;
   font-weight:600;
 }
 
 span{
   color:var(--accent);
+  font-size:18px;
 }
 
-/* FOOTER */
+/* ================= FOOTER ================= */
 .footer{
-  margin-top:40px;
-  padding-top:16px;
-  border-top:1px solid #1e293b;
+  margin-top:60px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
   text-align:center;
-  opacity:.85;
+  opacity:0.9;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px){
+  .controls{
+    grid-template-columns:1fr;
+  }
+
+  button{
+    width:100%;
+  }
 }
